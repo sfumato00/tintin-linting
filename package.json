@@ -1,0 +1,75 @@
+{
+  "name": "tintin-linting",
+  "displayName": "Tintin++ Linting",
+  "description": "Linting diagnostics for Tintin++ scripts.",
+  "version": "0.1.0",
+  "publisher": "your-name",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Linters"
+  ],
+  "activationEvents": [
+    "onLanguage:tintin"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "tintin",
+        "aliases": [
+          "Tintin++",
+          "Tintin"
+        ],
+        "extensions": [
+          ".tt",
+          ".tin",
+          ".tintin"
+        ]
+      }
+    ],
+    "configuration": {
+      "title": "Tintin++ Linting",
+      "properties": {
+        "tintinLint.maxLineLength": {
+          "type": "number",
+          "default": 120,
+          "description": "Maximum line length before a warning is shown."
+        },
+        "tintinLint.disallowTabs": {
+          "type": "boolean",
+          "default": true,
+          "description": "Warn when a tab character is found."
+        },
+        "tintinLint.warnOnTrailingWhitespace": {
+          "type": "boolean",
+          "default": true,
+          "description": "Warn when trailing whitespace is found."
+        },
+        "tintinLint.enforceUppercaseCommands": {
+          "type": "boolean",
+          "default": true,
+          "description": "Warn when commands (starting with #) are not uppercase."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "test": "mocha -r ts-node/register test/**/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.17.0",
+    "@types/vscode": "^1.80.0",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@vscode/vsce": "^3.7.1"
+  }
+}
