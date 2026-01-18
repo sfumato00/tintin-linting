@@ -2,8 +2,16 @@
   "name": "tintin-linting",
   "displayName": "Tintin++ Linting",
   "description": "Linting diagnostics for Tintin++ scripts.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "your-name",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sfumato00/tintin-linting.git"
+  },
+  "homepage": "https://github.com/sfumato00/tintin-linting",
+  "bugs": {
+    "url": "https://github.com/sfumato00/tintin-linting/issues"
+  },
   "engines": {
     "vscode": "^1.80.0"
   },
