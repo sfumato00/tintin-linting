@@ -1,7 +1,7 @@
 export interface FormatConfig {
   indentSize: number;
   insertSpaces: boolean;
-  lowercaseCommands: boolean;
+  commandCase: "lower" | "upper" | "preserve";
   trimTrailingWhitespace: boolean;
 }
 
@@ -21,9 +21,11 @@ function formatLine(line: string, config: FormatConfig): string {
     result = result.replace(/\t/g, spaces);
   }
 
-  if (config.lowercaseCommands) {
+  if (config.commandCase !== "preserve") {
     result = result.replace(COMMAND_REGEX, (_match, prefix, command) => {
-      return `${prefix}${command.toLowerCase()}`;
+      const normalized =
+        config.commandCase === "upper" ? command.toUpperCase() : command.toLowerCase();
+      return `${prefix}${normalized}`;
     });
   }
 

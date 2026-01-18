@@ -1,0 +1,13 @@
+{
+  "scopeName": "source.tintin",
+  "patterns": [
+    {
+      "match": "(#)([a-zA-Z][a-zA-Z0-9]*)",
+      "captures": {
+        "1": { "name": "punctuation.definition.keyword.tintin" },
+        "2": { "name": "keyword.control.tintin" }
+      },
+      "name": "meta.command.tintin"
+    }
+  ]
+}

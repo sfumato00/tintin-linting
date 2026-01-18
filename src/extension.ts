@@ -59,7 +59,7 @@ function formatDocument(document: vscode.TextDocument): vscode.TextEdit[] {
   const formatConfig: FormatConfig = {
     indentSize: config.get<number>("indentSize", 2),
     insertSpaces: config.get<boolean>("insertSpaces", true),
-    lowercaseCommands: config.get<boolean>("lowercaseCommands", true),
+    commandCase: config.get<"lower" | "upper" | "preserve">("commandCase", "lower"),
     trimTrailingWhitespace: config.get<boolean>("trimTrailingWhitespace", true),
   };
 
@@ -100,6 +100,7 @@ function lintDocument(
     disallowTabs: config.get<boolean>("disallowTabs", true),
     warnOnTrailingWhitespace: config.get<boolean>("warnOnTrailingWhitespace", true),
     enforceUppercaseCommands: config.get<boolean>("enforceUppercaseCommands", true),
+    validateCommands: config.get<boolean>("validateCommands", true),
   };
 
   const findings = lintText(document.getText(), lintConfig);

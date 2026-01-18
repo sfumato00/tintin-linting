@@ -37,6 +37,13 @@
         ]
       }
     ],
+    "grammars": [
+      {
+        "language": "tintin",
+        "scopeName": "source.tintin",
+        "path": "./syntaxes/tintin.tmLanguage.json"
+      }
+    ],
     "configuration": {
       "title": "Tintin++ Linting",
       "properties": {
@@ -65,10 +72,11 @@
           "default": true,
           "description": "Replace tabs with spaces during formatting."
         },
-        "tintinFormat.lowercaseCommands": {
-          "type": "boolean",
-          "default": true,
-          "description": "Lowercase Tintin++ commands (e.g., #echo)."
+        "tintinFormat.commandCase": {
+          "type": "string",
+          "enum": ["lower", "upper", "preserve"],
+          "default": "upper",
+          "description": "Command casing to enforce during formatting."
         },
         "tintinFormat.trimTrailingWhitespace": {
           "type": "boolean",
@@ -79,15 +87,21 @@
           "type": "boolean",
           "default": true,
           "description": "Warn when commands (starting with #) are not uppercase."
+        },
+        "tintinLint.validateCommands": {
+          "type": "boolean",
+          "default": true,
+          "description": "Warn when a command is not recognized as a valid Tintin++ command."
         }
       }
     }
   },
   "scripts": {
-    "compile": "tsc -p ./",
+    "compile": "tsc -p ./ && npm run package",
     "watch": "tsc -watch -p ./",
     "lint": "eslint src --ext ts",
-    "test": "mocha -r ts-node/register test/**/*.test.ts"
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "package": "vsce package"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.1",

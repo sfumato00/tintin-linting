@@ -4,7 +4,7 @@ import { FormatConfig, formatText } from "../src/formatter";
 const baseConfig: FormatConfig = {
   indentSize: 2,
   insertSpaces: true,
-  lowercaseCommands: true,
+  commandCase: "lower",
   trimTrailingWhitespace: true,
 };
 
@@ -19,6 +19,20 @@ describe("formatText", () => {
     const text = "#ECHO {Hi}";
     const formatted = formatText(text, baseConfig, "\n");
     assert.strictEqual(formatted, "#echo {Hi}");
+  });
+
+  it("uppercases commands", () => {
+    const config: FormatConfig = { ...baseConfig, commandCase: "upper" };
+    const text = "#echo {Hi}";
+    const formatted = formatText(text, config, "\n");
+    assert.strictEqual(formatted, "#ECHO {Hi}");
+  });
+
+  it("preserves command casing", () => {
+    const config: FormatConfig = { ...baseConfig, commandCase: "preserve" };
+    const text = "#EcHo {Hi}";
+    const formatted = formatText(text, config, "\n");
+    assert.strictEqual(formatted, "#EcHo {Hi}");
   });
 
   it("trims trailing whitespace", () => {
@@ -37,7 +51,7 @@ describe("formatText", () => {
     const config: FormatConfig = {
       indentSize: 4,
       insertSpaces: false,
-      lowercaseCommands: false,
+      commandCase: "preserve",
       trimTrailingWhitespace: false,
     };
     const text = "#ECHO\t{Hi}   ";
