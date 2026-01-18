@@ -59,8 +59,10 @@ function formatDocument(document: vscode.TextDocument): vscode.TextEdit[] {
   const formatConfig: FormatConfig = {
     indentSize: config.get<number>("indentSize", 2),
     insertSpaces: config.get<boolean>("insertSpaces", true),
-    commandCase: config.get<"lower" | "upper" | "preserve">("commandCase", "lower"),
+    commandCase: config.get<"lower" | "upper" | "preserve">("commandCase", "upper"),
     trimTrailingWhitespace: config.get<boolean>("trimTrailingWhitespace", true),
+    appendSemicolons: config.get<boolean>("appendSemicolons", true),
+    wrapArgsInBraces: config.get<boolean>("wrapArgsInBraces", true),
   };
 
   const eol = document.eol === vscode.EndOfLine.CRLF ? "\r\n" : "\n";
@@ -101,6 +103,7 @@ function lintDocument(
     warnOnTrailingWhitespace: config.get<boolean>("warnOnTrailingWhitespace", true),
     enforceUppercaseCommands: config.get<boolean>("enforceUppercaseCommands", true),
     validateCommands: config.get<boolean>("validateCommands", true),
+    requireSemicolons: config.get<boolean>("requireSemicolons", true),
   };
 
   const findings = lintText(document.getText(), lintConfig);

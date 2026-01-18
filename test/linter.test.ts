@@ -7,21 +7,22 @@ const baseConfig: LintConfig = {
   warnOnTrailingWhitespace: true,
   enforceUppercaseCommands: true,
   validateCommands: true,
+  requireSemicolons: true,
 };
 
 describe("lintText", () => {
   it("flags long lines", () => {
-    const diagnostics = lintText("01234567890", baseConfig);
+    const diagnostics = lintText("01234567890;", baseConfig);
     assert.strictEqual(diagnostics.length, 1);
-    assert.strictEqual(diagnostics[0].message, "Line exceeds 10 characters (11).");
+    assert.strictEqual(diagnostics[0].message, "Line exceeds 10 characters (12).");
     assert.deepStrictEqual(diagnostics[0].range, {
       start: { line: 0, character: 10 },
-      end: { line: 0, character: 11 },
+      end: { line: 0, character: 12 },
     });
   });
 
   it("flags tabs", () => {
-    const diagnostics = lintText("hi\tthere", baseConfig);
+    const diagnostics = lintText("hi\tthere;", baseConfig);
     assert.strictEqual(diagnostics.length, 1);
     assert.strictEqual(diagnostics[0].message, "Tab character found. Use spaces instead.");
     assert.deepStrictEqual(diagnostics[0].range, {
@@ -41,9 +42,9 @@ describe("lintText", () => {
   });
 
   it("can return multiple findings across lines", () => {
-    const diagnostics = lintText("01234567890\n\tbad  ", baseConfig);
+    const diagnostics = lintText("01234567890;\n\tbad;  ", baseConfig);
     assert.strictEqual(diagnostics.length, 3);
-    assert.strictEqual(diagnostics[0].message, "Line exceeds 10 characters (11).");
+    assert.strictEqual(diagnostics[0].message, "Line exceeds 10 characters (12).");
     assert.strictEqual(diagnostics[1].message, "Tab character found. Use spaces instead.");
     assert.strictEqual(diagnostics[2].message, "Trailing whitespace.");
   });
@@ -65,13 +66,14 @@ describe("lintText", () => {
       warnOnTrailingWhitespace: false,
       enforceUppercaseCommands: false,
       validateCommands: false,
+      requireSemicolons: false,
     };
     const diagnostics = lintText("01234567890\t  #echo", config);
     assert.strictEqual(diagnostics.length, 0);
   });
 
   it("flags unrecognized commands", () => {
-    const diagnostics = lintText("#INVALIDCOMMAND", { ...baseConfig, maxLineLength: 100 });
+    const diagnostics = lintText("#INVALIDCOMMAND;", { ...baseConfig, maxLineLength: 100 });
     assert.strictEqual(diagnostics.length, 1);
     assert.strictEqual(diagnostics[0].message, "Unrecognized command: '#INVALIDCOMMAND'.");
   });
@@ -81,14 +83,14 @@ describe("lintText", () => {
     // Might have other warnings if I didn't match the string perfectly, but assuming config is clean
     // baseConfig has maxLineLength: 10. The string above is long.
     // Let's use a short one.
-    const shortDiagnostics = lintText("#ECHO", { ...baseConfig, maxLineLength: 100 });
+    const shortDiagnostics = lintText("#ECHO;", { ...baseConfig, maxLineLength: 100 });
     assert.strictEqual(shortDiagnostics.length, 0);
   });
 
   it("handles mixed case validation logic", () => {
     // #echo is valid command but lowercase.
     // Should flag as lowercase AND valid (so no "Unrecognized" error, only "uppercase" error).
-    const diagnostics = lintText("#echo", { ...baseConfig, maxLineLength: 100 });
+    const diagnostics = lintText("#echo;", { ...baseConfig, maxLineLength: 100 });
     assert.strictEqual(diagnostics.length, 1);
     assert.strictEqual(diagnostics[0].message, "Command '#echo' should be uppercase: '#ECHO'.");
     // Should NOT say "Unrecognized command".
@@ -98,10 +100,23 @@ describe("lintText", () => {
     const config: LintConfig = {
       ...baseConfig,
       validateCommands: false,
-      maxLineLength: 100
+      maxLineLength: 100,
     };
-    const diagnostics = lintText("#INVALID", config);
+    const diagnostics = lintText("#INVALID;", config);
     // Should be 0 because it's uppercase (so no case error) and validation is off.
     assert.strictEqual(diagnostics.length, 0);
+  });
+
+  it("flags missing semicolons", () => {
+    const diagnostics = lintText("#ECHO {hi}", { ...baseConfig, maxLineLength: 100 });
+    assert.strictEqual(diagnostics.length, 1);
+    assert.strictEqual(diagnostics[0].message, "Command must end with ';'.");
+  });
+
+  it("flags missing semicolons on command blocks", () => {
+    const text = "#VARIABLE {Fight}\n{\n  {ROOM} {Test}\n}\n";
+    const diagnostics = lintText(text, { ...baseConfig, maxLineLength: 100 });
+    assert.strictEqual(diagnostics.length, 1);
+    assert.strictEqual(diagnostics[0].message, "Command must end with ';'.");
   });
 });

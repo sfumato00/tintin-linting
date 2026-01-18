@@ -6,6 +6,8 @@ const baseConfig: FormatConfig = {
   insertSpaces: true,
   commandCase: "lower",
   trimTrailingWhitespace: true,
+  appendSemicolons: false,
+  wrapArgsInBraces: true,
 };
 
 describe("formatText", () => {
@@ -53,9 +55,53 @@ describe("formatText", () => {
       insertSpaces: false,
       commandCase: "preserve",
       trimTrailingWhitespace: false,
+      appendSemicolons: false,
+      wrapArgsInBraces: false,
     };
     const text = "#ECHO\t{Hi}   ";
     const formatted = formatText(text, config, "\n");
     assert.strictEqual(formatted, "#ECHO\t{Hi}   ");
+  });
+
+  it("appends missing semicolons", () => {
+    const config: FormatConfig = { ...baseConfig, appendSemicolons: true };
+    const text = "#ECHO {Hi}";
+    const formatted = formatText(text, config, "\n");
+    assert.strictEqual(formatted, "#echo {Hi};");
+  });
+
+  it("does not double semicolons", () => {
+    const config: FormatConfig = { ...baseConfig, appendSemicolons: true };
+    const text = "#ECHO {Hi};";
+    const formatted = formatText(text, config, "\n");
+    assert.strictEqual(formatted, "#echo {Hi};");
+  });
+
+  it("appends semicolons to command blocks", () => {
+    const config: FormatConfig = { ...baseConfig, appendSemicolons: true };
+    const text = "#variable {Fight}\n{\n  {ROOM} {Test}\n}\n";
+    const formatted = formatText(text, config, "\n");
+    assert.strictEqual(formatted, "#variable {Fight}\n{\n  {ROOM} {Test}\n};\n");
+  });
+
+  it("wraps unbraced arguments in a single brace pair", () => {
+    const config: FormatConfig = { ...baseConfig, commandCase: "upper" };
+    const text = "#ECHO This line is valid;";
+    const formatted = formatText(text, config, "\n");
+    assert.strictEqual(formatted, "#ECHO {This line is valid};");
+  });
+
+  it("leaves braced arguments untouched", () => {
+    const config: FormatConfig = { ...baseConfig, commandCase: "upper" };
+    const text = "#ECHO {This line is valid};";
+    const formatted = formatText(text, config, "\n");
+    assert.strictEqual(formatted, "#ECHO {This line is valid};");
+  });
+
+  it("does not wrap when braces already exist in arguments", () => {
+    const config: FormatConfig = { ...baseConfig, commandCase: "upper" };
+    const text = "#ECHO {a} b c;";
+    const formatted = formatText(text, config, "\n");
+    assert.strictEqual(formatted, "#ECHO {a} b c;");
   });
 });

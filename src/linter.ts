@@ -1,9 +1,12 @@
+import { findMissingCommandSemicolons } from "./command-parser";
+
 export interface LintConfig {
   maxLineLength: number;
   disallowTabs: boolean;
   warnOnTrailingWhitespace: boolean;
   enforceUppercaseCommands: boolean;
   validateCommands: boolean;
+  requireSemicolons: boolean;
 }
 
 export interface LintPosition {
@@ -115,6 +118,20 @@ export function lintText(text: string, config: LintConfig): LintDiagnostic[] {
           });
         }
       }
+    }
+  }
+
+  if (config.requireSemicolons) {
+    const insertions = findMissingCommandSemicolons(text);
+    for (const insertion of insertions) {
+      diagnostics.push({
+        message: "Command must end with ';'.",
+        range: {
+          start: { line: insertion.line, character: insertion.column },
+          end: { line: insertion.line, character: insertion.column },
+        },
+        severity: "warning",
+      });
     }
   }
 

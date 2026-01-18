@@ -83,6 +83,16 @@
           "default": true,
           "description": "Trim trailing whitespace during formatting."
         },
+        "tintinFormat.appendSemicolons": {
+          "type": "boolean",
+          "default": true,
+          "description": "Append a semicolon to the end of each command when missing."
+        },
+        "tintinFormat.wrapArgsInBraces": {
+          "type": "boolean",
+          "default": true,
+          "description": "Wrap unbraced command arguments in a single set of braces."
+        },
         "tintinLint.enforceUppercaseCommands": {
           "type": "boolean",
           "default": true,
@@ -92,6 +102,11 @@
           "type": "boolean",
           "default": true,
           "description": "Warn when a command is not recognized as a valid Tintin++ command."
+        },
+        "tintinLint.requireSemicolons": {
+          "type": "boolean",
+          "default": true,
+          "description": "Require a semicolon at the end of each command."
         }
       }
     }
