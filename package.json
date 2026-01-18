@@ -47,6 +47,26 @@
           "default": true,
           "description": "Warn when trailing whitespace is found."
         },
+        "tintinFormat.indentSize": {
+          "type": "number",
+          "default": 2,
+          "description": "Indentation size for formatting."
+        },
+        "tintinFormat.insertSpaces": {
+          "type": "boolean",
+          "default": true,
+          "description": "Replace tabs with spaces during formatting."
+        },
+        "tintinFormat.lowercaseCommands": {
+          "type": "boolean",
+          "default": true,
+          "description": "Lowercase Tintin++ commands (e.g., #echo)."
+        },
+        "tintinFormat.trimTrailingWhitespace": {
+          "type": "boolean",
+          "default": true,
+          "description": "Trim trailing whitespace during formatting."
+        },
         "tintinLint.enforceUppercaseCommands": {
           "type": "boolean",
           "default": true,
